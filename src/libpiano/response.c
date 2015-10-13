@@ -31,6 +31,7 @@ THE SOFTWARE.
 #include <assert.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "piano.h"
 #include "piano_private.h"
@@ -238,36 +239,36 @@ PianoReturn_t PianoResponse (PianoHandle_t *ph, PianoRequest_t *req) {
 					continue;
 				}
 
-				/* get audio url based on selected quality */
+				song->audioFormat = 2; // mp3
+				song->audioUrl = PianoJsonStrdup (s, "additionalAudioUrl");
+				assert (song->audioUrl != NULL);
+
+				/* screw all this, we want mp3. no thinking required.
 				static const char *qualityMap[] = {"", "lowQuality", "mediumQuality",
 						"highQuality"};
 				assert (reqData->quality < sizeof (qualityMap)/sizeof (*qualityMap));
 				static const char *formatMap[] = {"", "aacplus", "mp3"};
 				json_object *map = json_object_object_get (s, "audioUrlMap");
-				assert (map != NULL);
+				map = json_object_object_get (map, qualityMap[reqData->quality]);
 
 				if (map != NULL) {
-					map = json_object_object_get (map, qualityMap[reqData->quality]);
-
-					if (map != NULL) {
-						const char *encoding = json_object_get_string (
-								json_object_object_get (map, "encoding"));
-						assert (encoding != NULL);
-						for (size_t k = 0; k < sizeof (formatMap)/sizeof (*formatMap); k++) {
-							if (strcmp (formatMap[k], encoding) == 0) {
-								song->audioFormat = k;
-								break;
-							}
+					const char *encoding = json_object_get_string (
+							json_object_object_get (map, "encoding"));
+					assert (encoding != NULL);
+					for (size_t k = 0; k < sizeof (formatMap)/sizeof (*formatMap); k++) {
+						if (strcmp (formatMap[k], encoding) == 0) {
+							song->audioFormat = k;
+							break;
 						}
-						song->audioUrl = PianoJsonStrdup (map, "audioUrl");
-					} else {
-						/* requested quality is not available */
-						ret = PIANO_RET_QUALITY_UNAVAILABLE;
-						free (song);
-						PianoDestroyPlaylist (playlist);
-						goto cleanup;
 					}
+					song->audioUrl = PianoJsonStrdup (map, "audioUrl");
+				} else {
+					ret = PIANO_RET_QUALITY_UNAVAILABLE;
+					free (song);
+					PianoDestroyPlaylist (playlist);
+					goto cleanup;
 				}
+				*/
 
 				song->artist = PianoJsonStrdup (s, "artistName");
 				song->album = PianoJsonStrdup (s, "albumName");
