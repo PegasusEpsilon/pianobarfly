@@ -26,6 +26,3 @@ This repo was forked from:
 This repo exists mainly to prove that mp3 downloading can be done with minimal
 changes. I probably won't alter this any further, since pianobar itself has a
 lot of derp code in it, and should probably be rewritten clean. Which I may do.
-
-I also want to emulate the website, not the android app, since that'll bypass
-the 40 hour per month listening limit. So yeah.
