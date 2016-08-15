@@ -26,7 +26,7 @@
  */
 
 #ifndef __FreeBSD__
-#define _BSD_SOURCE /* mkstemp() */
+#define _DEFAULT_SOURCE /* mkstemp() */
 #endif
 
 #if defined ENABLE_MAD && ENABLE_ID3TAG
